@@ -9,14 +9,18 @@ import fs from 'fs';
  * @property {number} timeStop time of test end in ms
  */
 
-/**
- * Reads file with allure results data
- * @param {string} allureReportDir path to allure-report directory
- * @returns paresed JSON file data/suites.json
- */
-const readAllureReport = (allureReportDir) => {
+const readDir = (pathToDir) => {
   try {
-    const data = fs.readFileSync(`${allureReportDir}/data/suites.json`, 'utf8');
+    const data = fs.readdirSync(pathToDir)
+    return data;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+const readFile = (pathToFile) => {
+  try {
+    const data = fs.readFileSync(pathToFile, 'utf8');
     return JSON.parse(data);
   } catch (error) {
     throw new Error(error);
@@ -50,21 +54,26 @@ const testStatusToInt = (status) => {
  * @returns {Array<SuiteInfo>} array of all suits results 
  */
 export const allureReportParser = (allureReportDir) => {
-  const data = readAllureReport(allureReportDir);
-
   const suitesInfo = [];
 
-  data.children.forEach((file) => {
-    file.children.forEach((suite) => {
-      suitesInfo.push({
-        duration: suite.time.duration,
-        name: suite.name,
-        status: suite.status,
-        statusCode: testStatusToInt(suite.status),
-        timeStart: suite.time.start,
-        timeStop: suite.time.stop,
-      });
+  const filenames = readDir(`${allureReportDir}/data/test-cases`);
+  console.log(filenames);
+
+  filenames.forEach((filename) => {
+    const testCase = readFile(`${allureReportDir}/data/test-cases/${filename}`);
+    const testCaseData = {};
+
+    testCaseData.name = testCase.name;
+    testCaseData.duration = testCase.time.duration;
+    testCaseData.timeStart = testCase.time.start;
+    testCaseData.flaky = testCase.flaky;
+    testCaseData.statusCode = testStatusToInt(testCase.status);
+
+    testCase.labels.forEach((label) => {
+      testCaseData[label.name] = label.value;
     })
+
+    suitesInfo.push(testCaseData);
   })
 
   return suitesInfo;

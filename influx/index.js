@@ -12,6 +12,11 @@ parsedSuites.forEach((suite) => {
   const point = new Point('suite')
     .tag('name', suite.name)
     .tag('status', suite.status)
+    .tag('flaky', suite.flaky)
+    .tag('package', suite.package)
+    .tag('story', suite.story)
+    .tag('severity', suite.severity)
+    .tag('feature', suite.feature)
     .intField('duration', suite.duration)
     .intField('statusCode', suite.statusCode)
     .timestamp(suite.timeStart);

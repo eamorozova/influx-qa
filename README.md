@@ -18,7 +18,8 @@ npm test
 ```
 allure generate
 ```
-4.  Запустить запись в Influx. Конфигурация указана в `config/index.js`
+4.  Запустить запись в Influx
+> Конфигурация указана в `config/index.js`
 ```
 npm run influx
 ```
@@ -27,18 +28,18 @@ npm run influx
 ### Экспортируемые данные
 В Influx экспортируются следующие параметры теста:
 
-* name (tag) — навзвание
-* status (tag) — статус выполнения
-* duration (field) — длительность в миллисекундах
-* statusCode (field) — статус выполнения в виде целого числа для отображения в Grafana: `passed = 0`, `failed = 1`, `broken = 2`, `skipped = 3`
+Поля:
+* duration — длительность в миллисекундах
+* statusCode — статус выполнения в виде целого числа для отображения в Grafana: `passed = 0`, `failed = 1`, `broken = 2`, `skipped = 3`
 
-> Можно будет добавить следующие параметры: 
-> * файл
-> * flaky 
-> * story
-> * severity
-> * feature
-> * собственные лейблы
+Теги:
+* name
+* status
+* package 
+* flaky 
+* story
+* feature
+* severity
 
 ---
 
